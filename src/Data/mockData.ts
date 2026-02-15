@@ -8,9 +8,13 @@ export interface EmergencyContact {
 export interface MedicationReminder {
   id: string;
   studentName: string;
-  medication: string;
+  medicationName: string;
+  dosage: string;
   time: string;
-  completed: boolean;
+  notes?: string;
+  status: "pending" | "seen" | "completed";
+  seenAt?: string;
+  completedAt?: string;
 }
 
 export interface Student {
@@ -28,7 +32,27 @@ export const emergencyContacts: EmergencyContact[] = [
   { id: "3", name: "Nearest Hospital", phone: "+94 11 234 5678", icon: "hospital" },
 ];
 
-export const medicationReminders: MedicationReminder[] = [];
+export const medicationReminders: MedicationReminder[] = [
+  {
+    id: "med-1",
+    studentName: "Movindu Gamage",
+    medicationName: "Cetirizine",
+    dosage: "5mg",
+    time: "10:00",
+    notes: "Take with food",
+    status: "pending",
+  },
+  {
+    id: "med-2",
+    studentName: "Kavith Fernando",
+    medicationName: "Ventolin Inhaler",
+    dosage: "2 puffs",
+    time: "12:00",
+    notes: "Before outdoor activities",
+    status: "seen",
+    seenAt: "2026-02-15T11:55:00",
+  },
+];
 
 export const students: Student[] = [
   {

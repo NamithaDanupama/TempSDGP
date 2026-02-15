@@ -22,7 +22,7 @@ const Home = () => {
 
   const features = [
     { id: 'visual-search', name: 'Visual Search', icon: Image },
-    { id: 'revision-games', name: 'Revision Games', icon: Image },
+    { id: 'revision-games', name: 'Lessons', icon: Image },
     { id: 'pronunciation', name: 'Correct Pronunciation', icon: Image },
     { id: 'dashboard', name: 'Dashboard', icon: Image },
   ];

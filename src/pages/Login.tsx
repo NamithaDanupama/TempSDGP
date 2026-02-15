@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
-import mochiMascot from '@/assets/mochi-mascot.jpeg';
+import mochiMascot from '@/assets/mochi-avatar.gif';
 import teacherAvatar from '@/assets/teacher-avatar.png';
 
 // TODO: Database Integration
@@ -94,7 +94,7 @@ const Login = () => {
           <img 
             src={mochiMascot} 
             alt="Mochi - Virtual Teaching Assistant" 
-            className="w-80 h-80 object-contain mx-auto animate-float drop-shadow-2xl"
+            className="w-80 h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] object-contain mx-auto animate-float drop-shadow-2xl"
           />
           <h1 className="mt-8 text-4xl font-bold text-foreground tracking-wide">
             Mochi
