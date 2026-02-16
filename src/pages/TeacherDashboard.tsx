@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Play, 
-  Gamepad2, 
-  FileText, 
-  Heart, 
-  Bell, 
+import {
+  Play,
+  Gamepad2,
+  FileText,
+  Heart,
+  Bell,
   Calendar,
-  SquarePen 
+  SquarePen
 } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MochiWelcomeCard } from "@/components/dashboard/MochiWelcomeCard";
@@ -22,19 +22,14 @@ const TeacherDashboard = () => {
   const [teacherName] = useState("Teacher");
   const [todayBirthday, setTodayBirthday] = useState<string | null>(null);
 
-  // --- Logic to Check for Birthdays Today ---
   useEffect(() => {
     const saved = localStorage.getItem('mochi_events');
     if (saved) {
       const allEvents = JSON.parse(saved);
-      // Get today's date in YYYY-MM-DD format (UTC) to match CalendarPage format
       const todayStr = new Date().toISOString().split('T')[0];
-
-      // Scan events for a birthday today
-      const birthdayEvent = allEvents.find((e: any) => 
+      const birthdayEvent = allEvents.find((e: any) =>
         e.date === todayStr && (e.type === "holiday" || e.title.toLowerCase().includes("birthday"))
       );
-
       if (birthdayEvent) {
         setTodayBirthday(birthdayEvent.title);
       }
@@ -42,39 +37,39 @@ const TeacherDashboard = () => {
   }, []);
 
   const features = [
-    { 
-      icon: Gamepad2, 
-      title: "Revision Games", 
+    {
+      icon: Gamepad2,
+      title: "Revision Games",
       description: "Do some activities with kids",
       onClick: () => navigate("/activities")
     },
-    { 
-      icon: Play, 
-      title: "Start Lesson", 
+    {
+      icon: Play,
+      title: "Start Lesson",
       description: "Create and manage lessons",
       onClick: () => navigate("/LessonPlaneHome")
     },
-    { 
-      icon: FileText, 
-      title: "Speech Reports", 
+    {
+      icon: FileText,
+      title: "Speech Reports",
       description: "View speech analysis reports",
       onClick: () => navigate("/speech-reports")
     },
-    { 
-      icon: Calendar, 
-      title: "Calendar", 
+    {
+      icon: Calendar,
+      title: "Calendar",
       description: "Manage your schedule",
       onClick: () => navigate("/calendar")
     },
-    { 
-      icon: Heart, 
-      title: "Health Data", 
+    {
+      icon: Heart,
+      title: "Health Data",
       description: "View students health data",
       onClick: () => navigate("/health-data")
     },
-    { 
-      icon: Bell, 
-      title: "Parent Reminders", 
+    {
+      icon: Bell,
+      title: "Parent Reminders",
       description: "Send notifications to parents",
       onClick: () => navigate("/reminders")
     }
@@ -92,21 +87,18 @@ const TeacherDashboard = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 lg:p-10 font-nunito">
       <div className="max-w-7xl mx-auto space-y-8">
-        
         <DashboardHeader teacherName={teacherName} onLogout={handleLogout} />
-
         <MochiWelcomeCard />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left: Feature Grid */}
-          <div className="lg:col-span-8 space-y-6"> {/* Added space-y-6 for spacing */}
-            
-            {/* --- Birthday Notification Banner Moved Here --- */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Birthday Notification Banner */}
             {todayBirthday && (
               <div className="animate-slide-up">
-                <div className="inline-flex items-center bg-white px-5 py-2 rounded-xl shadow-sm border border-border/40">
-                  <p className="text-sm font-medium text-[#475569]">
-                    Today is <span className="font-bold text-foreground">{todayBirthday}</span>
+                <div className="inline-flex items-center bg-card px-5 py-2 rounded-xl shadow-sm border border-border/40">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    🎂 Today is <span className="font-bold text-foreground">{todayBirthday}</span>
                   </p>
                 </div>
               </div>
@@ -129,7 +121,7 @@ const TeacherDashboard = () => {
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center justify-between mb-4 px-1">
               <h3 className="text-lg font-bold">Overview</h3>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 className="rounded-full text-xs font-bold border-primary/30 text-primary hover:bg-primary/10 transition-all flex items-center gap-1.5"
@@ -138,10 +130,10 @@ const TeacherDashboard = () => {
                 <SquarePen className="w-4 h-4" />
                 Edit Schedule
               </Button>
-            </div>  
+            </div>
 
-            <ScheduleCard /> 
-            
+            <ScheduleCard />
+
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
               <StatCard label="Total Students" value={20} variant="green" />
               <StatCard label="Activities Done" value={13} variant="yellow" />
