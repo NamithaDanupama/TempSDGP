@@ -88,6 +88,25 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning1: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+        mochi: "hsl(var(--card-mochi))", // This fixes bg-mochi
+        "stats-green": "hsl(var(--card-stats-green))",
+        "stats-yellow": "hsl(var(--card-stats-yellow))",
+
+        shadow: {
+          soft: "0 4px 20px -4px hsl(220 20% 50% / 0.1)",
+        }
         
       },
       borderRadius: {

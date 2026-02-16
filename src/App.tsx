@@ -20,6 +20,7 @@ import RemindersPage from "./pages/RemindersPage";
 import CalendarPage from "./pages/CalendarPage";
 import VisualSearch from "./pages/VisualSearch";
 import HealthData from "./pages/HealthData";
+import SchedulePage from "./pages/SchedulePage";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/speech-reports" element={<SpeechReportsPage />} />
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/visual-search" element={<VisualSearch/>} />
           <Route path="/health-data" element={<HealthData />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
