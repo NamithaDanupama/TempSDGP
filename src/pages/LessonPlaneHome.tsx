@@ -46,7 +46,6 @@ const Index = () => {
       <header className="border-b border-border bg-card">
         <div className="flex items-center justify-between px-6 py-4">
           <Button variant="ghost" size="icon" className="text-foreground" onClick={() => navigate('/Home')}>
-            
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-xl font-bold text-foreground">Activity Library</h1>

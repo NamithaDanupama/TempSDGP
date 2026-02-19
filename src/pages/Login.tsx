@@ -96,14 +96,15 @@ const Login = () => {
             alt="Mochi - Virtual Teaching Assistant" 
             className="w-80 h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] object-contain mx-auto animate-float drop-shadow-2xl"
           />
-          <h1 className="mt-8 text-4xl font-bold text-foreground tracking-wide">
-            Mochi
+          <h1 className="text-primary font-bold text-6xl md:text-8xl lg:text-9xl tracking-tight" 
+                style={{  textOrientation: 'mixed' }}>
+              MOCHI
           </h1>
         </div>
       </div>
 
       {/* Right side - Login form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-20">
         <div className="login-card w-full max-w-md">
           {/* Avatar */}
           <div className="flex justify-center mb-6">

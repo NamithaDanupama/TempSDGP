@@ -125,8 +125,8 @@ const Index = () => {
       {/* Hero content */}
       <main className="relative z-10 flex flex-col items-center gap-6 px-4 py-12 max-w-lg text-center">
         {/* Mascot placeholder — replace src with your GIF when ready */}
-        <div className="animate-float animate-gentle-pulse rounded-full p-2">
-            <img src={mochiGif} alt="Mochi mascot" className="w-64 h-64 rounded-full object-cover" />         
+        <div className="animate-gentle-pulse rounded-full p-2">
+            <img src={mochiGif} alt="Mochi mascot" className="w-100 h-100 rounded-full object-cover" />         
         </div>
 
         {/* Title */}

@@ -93,12 +93,12 @@ const Home = () => {
                 <button
                   key={feature.id}
                   onClick={() => handleFeatureClick(feature.id)}
-                  className="feature-card w-40 h-32 md:w-48 md:h-36"
+                  className="feature-card w-60 h-60 md:w-64 md:h-64"
                 >
                   <div className="feature-icon">
                     <feature.icon size={24} />
                   </div>
-                  <span className="text-foreground font-semibold text-sm md:text-base text-center">
+                  <span className="text-foreground font-semibold text-[1.4rem]  text-center">
                     {feature.name}
                   </span>
                 </button>
