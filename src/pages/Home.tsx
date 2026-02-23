@@ -22,7 +22,7 @@ const Home = () => {
 
   const features = [
     { id: 'visual-search', name: 'Visual Search', icon: Image },
-    { id: 'revision-games', name: 'Lessons', icon: Image },
+    { id: 'RevisionGames', name: 'Lessons', icon: Image },
     { id: 'pronunciation', name: 'Correct Pronunciation', icon: Image },
     { id: 'dashboard', name: 'Dashboard', icon: Image },
   ];
@@ -37,7 +37,7 @@ const Home = () => {
       case "visual-search":
         navigate("/visual-search");
         break;
-      case "revision-games":
+      case "lessonplan":
         navigate("/LessonPlaneHome");
         break;
       case "pronunciation":

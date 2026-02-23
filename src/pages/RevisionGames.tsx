@@ -80,7 +80,7 @@ const RevisionGames = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/TeacherDashboard")}
             className="rounded-full"
           >
             <ArrowLeft className="w-5 h-5" />

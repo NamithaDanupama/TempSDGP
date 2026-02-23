@@ -158,7 +158,7 @@ const GamePage = () => {
       setShowFeedback(false);
       setFeedback(null);
     } else {
-      navigate("/revision-games", { state: { score, total: questions.length } });
+      navigate("/RevisionGames", { state: { score, total: questions.length } });
     }
   };
 
@@ -169,7 +169,7 @@ const GamePage = () => {
   };
 
   const handleEnd = () => {
-    navigate("/revision-games");
+    navigate("/RevisionGames");
   };
 
   const handleNext = () => {
@@ -196,7 +196,7 @@ const GamePage = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">No questions available</h2>
           <button
-            onClick={() => navigate("/revision-games")}
+            onClick={() => navigate("/RevisionGames")}
             className="text-primary underline"
           >
             Go back
