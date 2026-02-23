@@ -41,7 +41,7 @@ const TeacherDashboard = () => {
       icon: Gamepad2,
       title: "Revision Games",
       description: "Do some activities with kids",
-      onClick: () => navigate("/activities")
+      onClick: () => navigate("/RevisionGames")
     },
     {
       icon: Play,

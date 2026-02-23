@@ -1,30 +1,40 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
+load_dotenv()
+
 from visualSearchBackend.services.config import get_config
 from visualSearchBackend.services.gemini_service import init_gemini
 from visualSearchBackend.routes import api_bp
 
-
-
-
-load_dotenv()
-
 def create_app():
+
     app = Flask(__name__)
-    CORS(app)
+
+    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+    
+    # 3. Universal API Key Bridge (Keeps AI working for all features)
+    api_key = os.getenv('VITE_GEMINI_API_KEY') or os.getenv('GEMINI_API_KEY')
+    if api_key:
+        app.config['GEMINI_API_KEY'] = api_key
+        os.environ['GEMINI_API_KEY'] = api_key
+        os.environ['VITE_GEMINI_API_KEY'] = api_key
+    else:
+        print("No Gemini API Key found in .env!")
+
     config_obj = get_config()
     app.config.from_object(config_obj)
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
-
     from lessonPlanBackend import lessons_bp
     from reinforcedLearningBackend  import mochi_bp
+    from revisionGamesBackend.routes import revision_games_bp
 
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(lessons_bp)
     app.register_blueprint(mochi_bp)
+    app.register_blueprint(revision_games_bp, url_prefix='/api/revision')
 
     # from quizzes import quizzes_bp
     # app.register_blueprint(quizzes_bp)

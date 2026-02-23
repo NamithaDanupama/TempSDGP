@@ -21,6 +21,9 @@ import CalendarPage from "./pages/CalendarPage";
 import VisualSearch from "./pages/VisualSearch";
 import HealthData from "./pages/HealthData";
 import SchedulePage from "./pages/SchedulePage";
+import RevisionGames from "./pages/RevisionGames";
+import CreateActivity from "./pages/CreateActivity";
+import GamePage from "./pages/GamePage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +51,9 @@ const App = () => (
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/visual-search" element={<VisualSearch/>} />
           <Route path="/health-data" element={<HealthData />} />
+          <Route path="/RevisionGames" element={<RevisionGames />} />
+          <Route path="/create-activity" element={<CreateActivity />} />
+          <Route path="/game/:categoryId" element={<GamePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
