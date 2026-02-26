@@ -37,7 +37,7 @@ const Home = () => {
       case "visual-search":
         navigate("/visual-search");
         break;
-      case "lessonplan":
+      case "RevisionGames":
         navigate("/LessonPlaneHome");
         break;
       case "pronunciation":
