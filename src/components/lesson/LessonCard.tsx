@@ -33,7 +33,7 @@ const LessonCard = ({ lesson, onClick, onEdit, onDelete }: LessonCardProps) => {
   };
 
   return (
-    <Card 
+    <Card
       className="cursor-pointer overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl bg-card border-2 border-border/50"
       onClick={onClick}
     >

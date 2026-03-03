@@ -45,7 +45,6 @@ const LessonItemEditor = ({
           </div>
 
           <div className="flex-1 space-y-4">
-            {/* Image Upload */}
             <div>
               <Label className="text-sm font-medium">Item Image</Label>
               <div className="mt-1">
@@ -78,11 +77,8 @@ const LessonItemEditor = ({
               </div>
             </div>
 
-            {/* Item Name */}
             <div>
-              <Label htmlFor={`item-name-${index}`} className="text-sm font-medium">
-                Item Name
-              </Label>
+              <Label htmlFor={`item-name-${index}`} className="text-sm font-medium">Item Name</Label>
               <Input
                 id={`item-name-${index}`}
                 placeholder="e.g., Apple"
@@ -92,11 +88,8 @@ const LessonItemEditor = ({
               />
             </div>
 
-            {/* Spoken Text */}
             <div>
-              <Label htmlFor={`item-text-${index}`} className="text-sm font-medium">
-                Spoken Text
-              </Label>
+              <Label htmlFor={`item-text-${index}`} className="text-sm font-medium">Spoken Text</Label>
               <Textarea
                 id={`item-text-${index}`}
                 placeholder="e.g., This is an Apple. Apples are red and delicious!"
@@ -107,7 +100,6 @@ const LessonItemEditor = ({
             </div>
           </div>
 
-          {/* Remove Button */}
           <Button
             type="button"
             variant="ghost"

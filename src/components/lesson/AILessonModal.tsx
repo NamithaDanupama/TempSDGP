@@ -41,15 +41,16 @@ const AILessonModal = ({ open, onOpenChange, onLessonCreated }: AILessonModalPro
       const result = await generateLessonWithAI({ topic: topic.trim() });
 
       if (result.success && result.lesson) {
+        const lessonId = result.lesson.id;
+        onOpenChange(false);
+        setTopic('');
+        onLessonCreated();
         toast({
           title: 'Lesson generated!',
           description: `Your lesson about "${topic}" has been created.`,
         });
-        onOpenChange(false);
-        setTopic('');
-        onLessonCreated();
-        // Navigate to edit the generated lesson
-        navigate(`/EditLesson/${result.lesson.id}`);
+        navigate(`/EditLesson/${lessonId}`);
+        
       } else {
         toast({
           title: 'Generation failed',

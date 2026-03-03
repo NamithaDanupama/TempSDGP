@@ -6,7 +6,6 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { FileEdit, Sparkles } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 
 interface CreateLessonModalProps {
   open: boolean;
@@ -37,7 +36,7 @@ const CreateLessonModal = ({ open, onOpenChange, onSelectTemplate, onSelectAI }:
               Create your lesson manually with images and text
             </span>
           </Button>
-          
+
           <Button
             variant="outline"
             className="flex h-auto flex-col items-center gap-2 p-6 text-left hover:border-primary hover:bg-primary/5"

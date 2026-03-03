@@ -1,11 +1,10 @@
 export interface LessonItem {
   id: string;
-  image: string;
+  image: string; // Can be base64 data or an imageId reference
   name: string;
   spokenText: string;
   order: number;
 }
-
 export interface Lesson {
   id: string;
   title: string;
@@ -15,7 +14,6 @@ export interface Lesson {
   createdAt: string;
   updatedAt: string;
 }
-
 export interface LessonFormData {
   title: string;
   description: string;

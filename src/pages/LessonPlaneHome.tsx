@@ -1,23 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { getLessons, deleteLesson } from '@/services/storageService';
+import { ArrowLeft, Plus, Loader2 } from 'lucide-react';
+import { getLessons, deleteLesson, resolveLessonImages } from '@/services/storageService';
 import { Lesson } from '@/types/lesson';
 import LessonCard from '@/components/lesson/LessonCard';
 import CreateLessonModal from '@/components/lesson/CreateLessonModal';
 import AILessonModal from '@/components/lesson/AILessonModal';
 import { toast } from '@/hooks/use-toast';
 
-const Index = () => {
+const LessonPlaneHome = () => {
   const navigate = useNavigate();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadLessons = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const allLessons = await getLessons();
+      // Resolve images for display
+      const resolved = await Promise.all(allLessons.map(resolveLessonImages));
+      setLessons(resolved);
+    } catch (error) {
+      console.error('Failed to load lessons:', error);
+      toast({ title: 'Error', description: 'Failed to load lessons.', variant: 'destructive' });
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    setLessons(getLessons());
-  }, []);
+    loadLessons();
+  }, [loadLessons]);
 
   const handlePlayLesson = (lessonId: string) => {
     navigate(`/PlayLesson/${lessonId}`);
@@ -27,9 +43,9 @@ const Index = () => {
     navigate(`/EditLesson/${lessonId}`);
   };
 
-  const handleDeleteLesson = (lessonId: string) => {
-    deleteLesson(lessonId);
-    setLessons(getLessons());
+  const handleDeleteLesson = async (lessonId: string) => {
+    await deleteLesson(lessonId);
+    await loadLessons();
     toast({
       title: 'Lesson deleted',
       description: 'The lesson has been removed.',
@@ -42,20 +58,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="flex items-center justify-between px-6 py-4">
           <Button variant="ghost" size="icon" className="text-foreground" onClick={() => navigate('/Home')}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-xl font-bold text-foreground">Activity Library</h1>
-          <div className="w-10" /> {/* Spacer for alignment */}
+          <div className="w-10" />
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="p-6">
-        {lessons.length === 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="mt-4 text-muted-foreground">Loading lessons...</p>
+          </div>
+        ) : lessons.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 text-6xl">📚</div>
             <h2 className="mb-2 text-xl font-semibold text-foreground">
@@ -64,7 +83,7 @@ const Index = () => {
             <p className="mb-6 text-muted-foreground">
               Create your first lesson to get started!
             </p>
-            <Button 
+            <Button
               onClick={() => setIsModalOpen(true)}
               className="rounded-full"
             >
@@ -87,7 +106,6 @@ const Index = () => {
         )}
       </main>
 
-      {/* Floating Action Button */}
       <Button
         size="lg"
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
@@ -96,7 +114,6 @@ const Index = () => {
         <Plus className="h-6 w-6" />
       </Button>
 
-      {/* Create Lesson Modal */}
       <CreateLessonModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
@@ -104,14 +121,13 @@ const Index = () => {
         onSelectAI={() => setIsAIModalOpen(true)}
       />
 
-      {/* AI Lesson Modal */}
       <AILessonModal
         open={isAIModalOpen}
         onOpenChange={setIsAIModalOpen}
-        onLessonCreated={() => setLessons(getLessons())}
+        onLessonCreated={loadLessons}
       />
     </div>
   );
 };
 
-export default Index;
+export default LessonPlaneHome;

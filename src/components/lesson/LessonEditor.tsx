@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, ImagePlus, Plus, Save, X } from 'lucide-react';
-import { createLesson, updateLesson, getLessonById } from '@/services/storageService';
+import { ArrowLeft, ImagePlus, Plus, Save, X, Loader2 } from 'lucide-react';
+import { createLesson, updateLesson, getLessonById, resolveLessonImages } from '@/services/storageService';
 import { LessonFormData } from '@/types/lesson';
 import LessonItemEditor from './LessonItemEditor';
 import { toast } from '@/hooks/use-toast';
@@ -22,18 +22,42 @@ interface ItemData {
 
 const LessonEditor = ({ lessonId }: LessonEditorProps) => {
   const navigate = useNavigate();
-  const existingLesson = lessonId ? getLessonById(lessonId) : undefined;
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [coverImage, setCoverImage] = useState('');
+  const [items, setItems] = useState<ItemData[]>([{ image: '', name: '', spokenText: '' }]);
+  const [isLoading, setIsLoading] = useState(!!lessonId);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [title, setTitle] = useState(existingLesson?.title || '');
-  const [description, setDescription] = useState(existingLesson?.description || '');
-  const [coverImage, setCoverImage] = useState(existingLesson?.coverImage || '');
-  const [items, setItems] = useState<ItemData[]>(
-    existingLesson?.items.map(item => ({
-      image: item.image,
-      name: item.name,
-      spokenText: item.spokenText,
-    })) || [{ image: '', name: '', spokenText: '' }]
-  );
+  useEffect(() => {
+    if (lessonId) {
+      const loadLesson = async () => {
+        setIsLoading(true);
+        try {
+          const lesson = await getLessonById(lessonId);
+          if (lesson) {
+            const resolved = await resolveLessonImages(lesson);
+            setTitle(resolved.title);
+            setDescription(resolved.description);
+            setCoverImage(resolved.coverImage);
+            setItems(
+              resolved.items.map((item) => ({
+                image: item.image,
+                name: item.name,
+                spokenText: item.spokenText,
+              }))
+            );
+          }
+        } catch (error) {
+          console.error('Failed to load lesson:', error);
+          toast({ title: 'Error', description: 'Failed to load lesson.', variant: 'destructive' });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      loadLesson();
+    }
+  }, [lessonId]);
 
   const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,7 +71,7 @@ const LessonEditor = ({ lessonId }: LessonEditorProps) => {
   };
 
   const updateItem = (index: number, field: keyof ItemData, value: string) => {
-    setItems(prev => prev.map((item, i) => 
+    setItems(prev => prev.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     ));
   };
@@ -62,76 +86,74 @@ const LessonEditor = ({ lessonId }: LessonEditorProps) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) {
-      toast({
-        title: 'Error',
-        description: 'Please enter a lesson title',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Please enter a lesson title', variant: 'destructive' });
       return;
     }
 
     const validItems = items.filter(item => item.name.trim() || item.spokenText.trim());
     if (validItems.length === 0) {
-      toast({
-        title: 'Error',
-        description: 'Please add at least one lesson item',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Please add at least one lesson item', variant: 'destructive' });
       return;
     }
 
-    const formData: LessonFormData = {
-      title: title.trim(),
-      description: description.trim(),
-      coverImage,
-      items: validItems,
-    };
+    setIsSaving(true);
+    try {
+      const formData: LessonFormData = {
+        title: title.trim(),
+        description: description.trim(),
+        coverImage,
+        items: validItems,
+      };
 
-    if (lessonId) {
-      updateLesson(lessonId, formData);
-      toast({
-        title: 'Success',
-        description: 'Lesson updated successfully',
-      });
-    } else {
-      createLesson(formData);
-      toast({
-        title: 'Success',
-        description: 'Lesson created successfully',
-      });
+      if (lessonId) {
+        await updateLesson(lessonId, formData);
+        toast({ title: 'Success', description: 'Lesson updated successfully' });
+      } else {
+        await createLesson(formData);
+        toast({ title: 'Success', description: 'Lesson created successfully' });
+      }
+
+      navigate('/LessonPlaneHome');
+    } catch (error) {
+      console.error('Failed to save lesson:', error);
+      toast({ title: 'Error', description: 'Failed to save lesson.', variant: 'destructive' });
+    } finally {
+      setIsSaving(false);
     }
-
-    navigate('/LessonPlaneHome');
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading lesson...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between p-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/LessonPlaneHome')}
-          >
+          <Button variant="ghost" size="icon" onClick={() => navigate('/LessonPlaneHome')}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-lg font-semibold">
             {lessonId ? 'Edit Lesson' : 'Create Lesson'}
           </h1>
-          <Button onClick={handleSave} size="sm">
-            <Save className="mr-2 h-4 w-4" />
+          <Button onClick={handleSave} size="sm" disabled={isSaving}>
+            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save
           </Button>
         </div>
       </header>
 
-      {/* Form */}
       <main className="mx-auto max-w-3xl p-4 pb-20">
         <div className="space-y-6">
-          {/* Cover Image */}
           <div>
             <Label className="text-sm font-medium">Cover Image</Label>
             <div className="mt-2">
@@ -158,46 +180,22 @@ const LessonEditor = ({ lessonId }: LessonEditorProps) => {
                       Upload cover image
                     </span>
                   </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleCoverImageUpload}
-                  />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleCoverImageUpload} />
                 </label>
               )}
             </div>
           </div>
 
-          {/* Title */}
           <div>
-            <Label htmlFor="title" className="text-sm font-medium">
-              Lesson Title
-            </Label>
-            <Input
-              id="title"
-              placeholder="e.g., Learn Fruits"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1"
-            />
+            <Label htmlFor="title" className="text-sm font-medium">Lesson Title</Label>
+            <Input id="title" placeholder="e.g., Learn Fruits" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" />
           </div>
 
-          {/* Description */}
           <div>
-            <Label htmlFor="description" className="text-sm font-medium">
-              Description
-            </Label>
-            <Textarea
-              id="description"
-              placeholder="What will students learn in this lesson?"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1"
-            />
+            <Label htmlFor="description" className="text-sm font-medium">Description</Label>
+            <Textarea id="description" placeholder="What will students learn in this lesson?" value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1" />
           </div>
 
-          {/* Lesson Items */}
           <div>
             <div className="mb-3 flex items-center justify-between">
               <Label className="text-sm font-medium">Lesson Items</Label>
