@@ -13,6 +13,7 @@ import CreateLesson from "./pages/CreateLesson";
 import EditLesson from "./pages/EditLesson";
 import PlayLesson from "./pages/PlayLesson";
 import ReinforcedLearning from "./pages/ReinforcedLearning";
+import PhoneticDashboard from "./pages/PhoneticDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ActivitiesPage from "./pages/ActivitiesPage";
 import SpeechReportsPage from "./pages/SpeechReportsPage";
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/EditLesson/:id" element={<EditLesson />} />
           <Route path="/PlayLesson/:id" element={<PlayLesson />} />
           <Route path="/reinforced-learning" element={<ReinforcedLearning />} />
+          <Route path="/phonetic-dashboard" element={<PhoneticDashboard />} />
           <Route path="/TeacherDashboard" element={<TeacherDashboard />} />
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/speech-reports" element={<SpeechReportsPage />} />
