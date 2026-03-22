@@ -16,11 +16,11 @@ def create_app():
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
     
     # 3. Universal API Key Bridge (Keeps AI working for all features)
-    api_key = os.getenv('VITE_GEMINI_API_KEY') or os.getenv('GEMINI_API_KEY')
+    api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GEMINI_API_KEY')
     if api_key:
         app.config['GEMINI_API_KEY'] = api_key
         os.environ['GEMINI_API_KEY'] = api_key
-        os.environ['VITE_GEMINI_API_KEY'] = api_key
+        os.environ['GEMINI_API_KEY'] = api_key
     else:
         print("No Gemini API Key found in .env!")
 

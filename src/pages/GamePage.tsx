@@ -28,22 +28,29 @@ interface SavedGame {
   createdAt: string;
 }
 
-// THE FIX: Strict ID mapping instead of text matching
+// Frontend Shuffling: Ensures even old saved games get their options scrambled before hitting the screen
 const convertSavedGameQuestions = (savedGame: any): Question[] => {
   return savedGame.questions.map((q: any, idx: number) => {
     
-    // 1. Safely grab the index you marked as correct (fallback to 0)
+    // 1. Safely grab the correct answer text before doing anything else
     const correctIndex = q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0;
-    const correctAnswerLabel = q.options[correctIndex]?.label || "Unknown";
+    const correctAnswerLabel = q.correct_answer || q.options[correctIndex]?.label || "Unknown";
+    
+    // 2. Shuffle a copy of the options array so they are perfectly randomized
+    const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
     
     return {
       id: idx + 1,
       category_id: -1,
       target_item: q.target_item || correctAnswerLabel,
       correct_answer: correctAnswerLabel,
-      correct_answer_id: correctIndex + 1, // 2. Force it to explicitly use the ID!
-      options: q.options.map((opt: any, optIdx: number) => ({
-        id: optIdx + 1,
+      
+      // 3. Set this to undefined. This forces the click-handler further down 
+      // to check the text of the answer instead of its physical button ID.
+      correct_answer_id: undefined, 
+      
+      options: shuffledOptions.map((opt: any, optIdx: number) => ({
+        id: optIdx + 1, // Re-assign fresh IDs 1, 2, 3 to the newly shuffled slots
         label: opt.label,
         image_url: opt.image_url || opt.image || `https://placehold.co/300x300?text=${opt.label}`,
       })),
@@ -96,7 +103,7 @@ const GamePage = () => {
     
     setSelectedOption(option);
     
-    // 3. Check exact numeric ID, completely ignoring text casing or spaces
+    // Check exact numeric ID first, otherwise fallback to text casing
     const isCorrectLocally = (currentQuestion as any).correct_answer_id 
       ? option.id === (currentQuestion as any).correct_answer_id
       : option.label.toLowerCase() === currentQuestion.correct_answer.toLowerCase();
@@ -108,7 +115,7 @@ const GamePage = () => {
       currentQuestion.target_item
     );
     
-    // Override the AI's logic to perfectly match our ID logic
+    // Override the AI's logic to perfectly match my local logic
     result.isCorrect = isCorrectLocally;
     
     const targetName = currentQuestion.target_item && currentQuestion.target_item !== "Unknown" 
@@ -236,10 +243,12 @@ const GamePage = () => {
         >
           <div className="grid grid-cols-3 gap-4">
             {currentQuestion.options.map((option) => {
-              // 4. Update the visual UI check to strictly use the ID too!
+              
+              // Ensure .toLowerCase() is used here just like in my click handler 
+              // to guarantee the card always glows green when the answer is correct.
               const isOptionCorrectLocally = (currentQuestion as any).correct_answer_id
                 ? option.id === (currentQuestion as any).correct_answer_id
-                : option.label === currentQuestion.correct_answer;
+                : option.label.toLowerCase() === currentQuestion.correct_answer.toLowerCase();
 
               return (
                 <AnswerCard
